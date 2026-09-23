@@ -35,9 +35,3 @@ The problem instances are defined by three input files:
 * **Data Processing:** NumPy, pandas
 * **Design Pattern:** Object-Oriented Programming (OOP). The mathematical model is encapsulated in a custom solver class inheriting from an `AbstractSolver` interface, ensuring seamless integration with the testing environments.
 
-## How to Run
-
-Ensure you have a valid Gurobi license and the required dependencies installed:
-
-```bash
-pip install gurobipy numpy pandas
