@@ -1,56 +1,43 @@
+# Supply Chain Optimization Solver
 
-# Descrizione
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![Gurobi](https://img.shields.io/badge/Gurobi-ED1C24?style=for-the-badge&logo=gurobi&logoColor=white)
+![Operations Research](https://img.shields.io/badge/Operations%20Research-MILP-blue?style=for-the-badge)
 
-Siete stati incaricati dalla nota azienda avicola *Polli Tech di N.I. &
-Co.* di progettare una catena di distribuzione per la
-commercializzazione dei suoi prodotti. In particolare, l'azienda vi
-richiede di trovare il piazzamento ottimale (tra un insieme possibile di
-posizioni) di magazzini per le merci, i quali hanno lo scopo di
-distribuire i propri prodotti ai supermercati circostanti.
+A Mixed-Integer Linear Programming (MILP) solver developed for the Operations Research course (2024/2025). The project solves a complex, joint **Facility Location** and **Vehicle Routing Problem (TSP variation)** for a supply chain distribution network.
 
-Ogni magazzino ha un costo di costruzione ed è in grado di servire un
-certo sottoinsieme di supermercati. Ogni supermercato non servito da
-nessun magazzino costituisce una perdita economica per l'azienda.
-Infine, il piazzamento dei magazzini deve tenere conto del costo di
-trasporto delle merci dall'azienda ai magazzini stessi, che viene
-effettuato con un unico mezzo che parte dall'azienda, visita ogni
-magazzino e ritorna all'azienda ogni giorno.
+## Problem Statement
 
-# Dati
+The goal is to design an optimal distribution chain for *Polli Tech*. The solver must determine the optimal placement of warehouses from a set of candidate locations and compute the optimal daily route for a single delivery vehicle. The vehicle starts at the company headquarters, visits all the newly constructed warehouses to deliver goods, and returns to the headquarters.
 
-Ogni istanza del problema è composta dai seguenti files:
+The mathematical model jointly optimizes two sets of decision variables:
+* **`X` (Facility Location):** A binary vector indicating which candidate warehouse locations are activated.
+* **`Y` (Vehicle Routing):** A binary matrix representing the directed paths chosen by the delivery vehicle between the headquarters and the activated warehouses.
 
--   `weights.json`: contiene i costi che l'azienda può sostenere, che
-    sono:
+## Objective Function
 
-    -   `’construction’`: costo giornaliero dovuto alla costruzione e
-        alla manutenzione di un magazzino (immaginiamo che la
-        costruzione non sia pagata una tantum ma sia ammortizzata nel
-        tempo)
+The solver minimizes the total daily operating cost, which is a trade-off between:
+1. **Construction Costs:** Amortized daily cost for building and maintaining an active warehouse.
+2. **Unserved Client Penalties:** Economic loss incurred for every supermarket that is not covered by any active warehouse.
+3. **Travel Costs:** Fuel and logistics costs proportional to the total distance covered by the delivery vehicle.
 
-    -   `’missed_supermarket’`: penalità giornaliera per un supermercato
-        non servito da nessun magazzino
+## Data Structure
 
-    -   `’travel’`: costo del carburante per ciascun chilometro di
-        distanza percorso
+The problem instances are defined by three input files:
+* `weights.json`: Contains the cost weights (`construction`, `missed_supermarket`, `travel`).
+* `service.csv`: A boolean incidence matrix where entry $i,j = 1$ if candidate warehouse $i$ can serve supermarket $j$.
+* `distances.csv`: An asymmetric distance matrix where the first row/column corresponds to the company headquarters and the remaining indices represent candidate warehouse locations.
 
--   `service.csv`: matrice in cui ogni riga si riferisce a una possibile
-    posizione dei magazzini e ogni colonna a un supermercato. Se un
-    magazzino può servire un certo supermercato l'elemento della matrice
-    corrispondente è pari a 1, 0 altrimenti.
+## Architecture & Technologies
 
--   `distances.csv`: matrice delle distanze tra le possibili posizioni
-    dei magazzini e tra le possibili posizioni dei magazzini e
-    l'azienda. Sia sulle colonne che sulle righe, il primo elemento fa
-    riferimento all'azienda, mentre gli altri ai magazzini, nello stesso
-    ordine in cui si trovano in `service.csv`. Ciascun elemento della
-    matrice (che non è necessariamente simmetrica) rappresenta la
-    distanza in chilometri dal luogo sulla riga al luogo sulla colonna.
+* **Language:** Python
+* **Solver:** Gurobi Optimizer (`gurobipy`)
+* **Data Processing:** NumPy, pandas
+* **Design Pattern:** Object-Oriented Programming (OOP). The mathematical model is encapsulated in a custom solver class inheriting from an `AbstractSolver` interface, ensuring seamless integration with the testing environments.
 
-# Richiesta
+## How to Run
 
-Utilizzando **python** come linguaggio di programmazione e **GUROBI**
-come solver, si sviluppi un modello di programmazione lineare per
-risolvere il problema.
+Ensure you have a valid Gurobi license and the required dependencies installed:
 
-
+```bash
+pip install gurobipy numpy pandas
