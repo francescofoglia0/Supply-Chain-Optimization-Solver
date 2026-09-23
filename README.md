@@ -54,9 +54,3 @@ come solver, si sviluppi un modello di programmazione lineare per
 risolvere il problema.
 
 
-
-# Deadline
-
-Il progetto deve essere consegnato tramite la sezione **Elaborati** del
-Portale della didattica (uno solo per gruppo) entro le 23:59 del giorno
-30/06/2025.
